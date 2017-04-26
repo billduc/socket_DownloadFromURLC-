@@ -1,0 +1,156 @@
+<html>
+<head>
+
+<title> JPEG Header Format </title>
+
+<meta http-equiv="Description" name="Description" Content="Fastgraph
+for Windows Online Help">
+
+<meta http-equiv="Keywords" name="Keywords" Content="Fastgraph,
+graphics, animation, render, rendering, software, blitting, DirectX,
+Direct3D, games, library, programming, developer, development, Windows,
+game developing, DirectDraw, C, C++, C/C++, Visual C++, Borland C++Builder,
+Builder, Delphi, VisualBasic, Basic, Windows 95 98 2000 NT,Diana Gruber, Ted Gruber, Ted Gruber Software, Inc.">
+
+</head>
+
+<body bgcolor="#ffffff" text="#000000"   link="#F00000" vlink="#D00000">
+
+<center>
+<table width="90%" cellpadding=1 cellspacing=1 border=0>
+ <tr>
+  <td>
+
+<h1>JPEG Header Format</h1><p>
+Strictly speaking, JPEG files do not have formal headers, but  <a href="fg_jpeghead.html">fg_jpeghead()</a> and  <a href="fgi_jpeghead.html">fgi_jpeghead()</a> return relevant information from the file's start of frame segment. We call it a header for consistency with other image file formats.<p>
+<center>
+<table cellpadding=12 cellspacing=0 topmargin=0 bottommargin=0 border=1><p>
+ <tr>
+  <td>
+<b>offset</b><p>
+  </td>
+  <td>
+<b>size</b><p>
+  </td>
+  <td>
+<b>description</b><p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+0<p>
+  </td>
+  <td>
+2<p>
+  </td>
+  <td>
+JPEG SOI marker (FFD8 hex)<p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+2<p>
+  </td>
+  <td>
+2<p>
+  </td>
+  <td>
+image width in pixels<p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+4<p>
+  </td>
+  <td>
+2<p>
+  </td>
+  <td>
+image height in pixels<p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+6<p>
+  </td>
+  <td>
+1<p>
+  </td>
+  <td>
+number of components (1 = grayscale, 3 = RGB)<p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+7<p>
+  </td>
+  <td>
+1<p>
+  </td>
+  <td>
+horizontal/vertical sampling factors for component 1<p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+8<p>
+  </td>
+  <td>
+1<p>
+  </td>
+  <td>
+sampling factors for component 2 (if RGB)<p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+9<p>
+  </td>
+  <td>
+1<p>
+  </td>
+  <td>
+sampling factors for component 3 (if RGB)<p>
+  </td>
+ </tr>
+</table>
+</center><p>
+<center>
+<table cellpadding=12 cellspacing=0 topmargin=0 bottommargin=0 border=1><p>
+ <tr>
+  <td>
+<center> <a href="pcx_header_format.html"><< Prev</a></center><p>
+  </td>
+  <td>
+<center> <a href="flic_header_format.html">Next >></a></center><p>
+  </td>
+ </tr>
+</table>
+</center><p>
+  </td>
+ </tr>
+</table>
+</center>
+<p>
+
+<center>
+<a href="contents.html">Contents</a><br><a href="http://www.fastgraph.com">Fastgraph Home Page</a><p> <font size=1 color="#000080">
+&nbsp<p>
+  copyright 2001 Ted Gruber Software, Inc.
+<p> </font>
+</center>
+</body>
+</html>
+HTTP/1.1 400 Bad Request
+Content-Type: text/html; charset=us-ascii
+Server: Microsoft-HTTPAPI/2.0
+Date: Wed, 26 Apr 2017 11:54:43 GMT
+Connection: close
+Content-Length: 326
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN""http://www.w3.org/TR/html4/strict.dtd">
+<HTML><HEAD><TITLE>Bad Request</TITLE>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=us-ascii"></HEAD>
+<BODY><h2>Bad Request - Invalid Verb</h2>
+<hr><p>HTTP Error 400. The request verb is invalid.</p>
+</BODY></HTML>

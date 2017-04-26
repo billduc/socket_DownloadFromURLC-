@@ -1,21 +1,22 @@
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <curl/curl.h>
 
+//#include <curl/types.h>
+#include <curl/easy.h>
+
+#include <string.h>
+
+size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
+    size_t written = fwrite(ptr, size, nmemb, stream);
+    return written;
+}
 
 int main(void) {
-    string URL;
-    
-    cout << "Enter your URL: ";
-    cin >> URL;
-
-    char *url = "https://translate.google.com/#en/vi/Medicine";
-    char outfilename[FILENAME_MAX] = "D:\\bbb.txt";
+    CURL *curl;
+    FILE *fp;
+    CURLcode res;
+    char *url = "http://localhost/aaa.txt";
+    char outfilename[FILENAME_MAX] = "C:\\bbb.txt";
     curl = curl_easy_init();
     if (curl) {
         fp = fopen(outfilename,"wb");

@@ -61,6 +61,7 @@ int main(int argc, char** argv)
         fprintf(stderr,"Got an address.\n");
     }
 
+
     //bcopy is deprecated also, using memcpy instead
     memcpy((char *)&servaddr.sin_addr.s_addr, (char *)hp->h_addr, hp->h_length);
 

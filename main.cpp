@@ -1,7 +1,10 @@
-/*Day la chuong trinh download file pfd tu url*/
+/*Day la chuong trinh download mot so loai file tu URL
+    URL tro den 1 file can down.
+*/
 
 
 #include <iostream>
+#include <fstream>
 #include <stdio.h> //printf
 #include <string.h> //memset
 #include <stdlib.h> //for exit(0);
@@ -10,13 +13,32 @@
 #include <netdb.h> //hostent
 #include <arpa/inet.h>
 #include <string>
+#include <typeinfo>
+#include <algorithm>
+
 /*
-link example:
-http://www.axmag.com/download/UserGuide.pdf
-www.axmag.com/download/pdfurl-guide.pdf
+link example for download 
+http://yoursmiles.org/ismile/trollfaces/i11423.gif
+
+___pdf:
 https://student.uit.edu.vn/sites/daa/files/201704/23-ttktta_10-4-2017.pdf
 student.uit.edu.vn/sites/daa/files/201704/23-ttktta_10-4-2017.pdf
 https://student.uit.edu.vn/sites/daa/files/201704/189_qd-dhcntt_18-4-2017_0.pdf
+
+___file compression:
+http://crcv.ucf.edu/data/UCFCrowdCountingDataset_CVPR13.rar
+
+___mp4: XXX
+http://data.chiasenhac.com/downloads/1780/2/1779589-c8b3b5b7/128/Neu%20Duoc%20Lam%20Nguoi%20Tinh%20-%20Quynh%20Trang%20[MP4%20MV%20360p].mp4
+
+___mp3:
+http://data.chiasenhac.com/downloads/1782/3/1781714-81c76ccb/128/Attention%20-%20Charlie%20Puth%20[MP3%20128kbps].mp3
+
+___image: 
+http://thuvienanhdep.net/wp-content/uploads/2016/02/nhung-hinh-dep-ve-lang-que-viet-nam-qua-ong-kinh-cac-nha-nhiep-anh-6.jpg
+
+___html:
+http://www.fastgraph.com/help/jpeg_header_format.html
  */ 
 
 using namespace std;
@@ -32,7 +54,6 @@ int main(int argc , char *argv[])
 
     char *message;
     char server_reply[10000];
-    //char *filename = "file.pdf";
     int total_len = 0;
     char *ip;
     char *cURL;
@@ -54,7 +75,6 @@ int main(int argc , char *argv[])
     string sPath = getPath(url);
     for(int i = 0; i < sPath.length(); ++i)
       path[i] = sPath[i];
-
 
     string fileName = getFileName(sPath);
 
@@ -95,7 +115,25 @@ int main(int argc , char *argv[])
 
     //Send request
     //message = "GET /download/pdfurl-guide.pdf HTTP/1.1\r\nHost: www.axmag.com\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n";
-    string mes = "GET " + sPath + " HTTP/1.1\r\nHost: " + sDomain + "\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n";
+    string mes = "GET " + sPath + " HTTP/1.1\r\nHost: " + sDomain + "\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n\r\n";
+/*    string headrequest = "HEAD "  + sPath + " HTTP/1.1\r\nHost: " + sDomain + "\r\n\r\n";
+    
+    char mess_head[234];
+
+    for(int i = 0; i < headrequest.length(); ++i)
+        mess_head[i] = headrequest[i];
+    
+    if ( send(socket_desc, mess_head, strlen(mess_head), 0) < 0)
+    {
+        puts("Send head request failed");
+        return 1;
+    }
+
+    char reply_buf_headrequest[12345];
+    int len_head =  recv(socket_desc, reply_buf_headrequest, sizeof reply_buf_headrequest , 0); 
+    
+    puts(reply_buf_headrequest); */
+    //string mes = "GET " + sPath + "\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n\r\n";
     //string mes = "GET https://student.uit.edu.vn/sites/daa/files/201704/23-ttktta_10-4-2017.pdf HTTP/1.1";
     //std::cout << mes << std::endl;
     char mess[345];
@@ -111,15 +149,35 @@ int main(int argc , char *argv[])
     puts("Data Send\n"); 
 
     //remove(filename);
-    file = fopen(filename, "ab");
+    //file = fopen(filename, "w+b");
+
+    ofstream out;
+    out.open(filename, ios::binary);
 
     if(file == NULL){
         printf("File could not opened");
     }   
-
+    //int received_len = recv(socket_desc, server_reply , sizeof(server_reply) - 1 , 0);
+    bool header_skipped=false;
     while(1)
     {
+        
         int received_len = recv(socket_desc, server_reply , sizeof server_reply , 0);
+        //server_reply  = strstr(server_reply, "\r\n\r\n");
+        if (received_len > 0)     // if bytes received
+        {
+            size_t data_offset = 0;      // normally take data from begin of butter 
+            if (!header_skipped) {    // if header was not skipped, look for its end
+                char *eoh = "\r\n\r\n";
+                auto it = search (server_reply, server_reply + received_len, eoh, eoh + 4); 
+                if (it != server_reply + received_len) {   // if header end found: 
+                    data_offset = it - server_reply + 4;      // skip it
+                    header_skipped = true;              // and then do not care any longer
+                }                             // because data can also containt \r\n\r\n
+            }
+            out.write(server_reply + data_offset, received_len - data_offset); // write, ignoring before the offset
+        }
+       
 
         if( received_len < 0 ){
             puts("recv failed");
@@ -130,24 +188,27 @@ int main(int argc , char *argv[])
             puts(" finished");
             break;
         }
-
-/*        char* tt = (char*)server_reply;
-        std::cout << tt << std::endl;*/
+        //server_reply[received_len] = '\0';
+        // char* tt = (char*)server_reply;
+        // std::cout << tt << std::endl;
 
         total_len += received_len;
 
-        //puts(server_reply);   
-        fwrite(server_reply , received_len , 1, file);
+        puts(server_reply);   
 
+        //fwrite(server_reply , sizeof(server_reply) , 1, file);
 
-        printf("\nReceived byte size = %d\nTotal lenght = %d", received_len, total_len);
+        //fwrite(server_reply , received_len , 1, file);
 
+        //fwrite(content, sizeof(content) - 1, 1, file);
+        printf("\nReceived byte size = %d\nTotal lenght = %d\n", received_len, total_len);
+        //memset( server_reply, '\0', sizeof(server_reply) );
     }
 
     puts("\nReply received\n");
 
-    fclose(file);
-
+    //fclose(file);
+    out.close();
     return 0;
 }
 
@@ -189,7 +250,7 @@ string _trim(const string& str)
     return string(i,x);
 }
  
-void parse_url(const string& raw_url) //no boost
+void parse_url(const string& raw_url) 
 {
     string path,domain,x,protocol,port,query;
     int offset = 0;
@@ -228,7 +289,7 @@ string getDomain(const string& raw_url){
     return domain;
 }
 
-string getPath(const string& raw_url) //no boost
+string getPath(const string& raw_url) 
 {
     string path,domain,x;
     int offset = 0;
